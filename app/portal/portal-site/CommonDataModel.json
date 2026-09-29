@@ -1,0 +1,111 @@
+{
+  "_version": "3.0.0",
+  "identification": {
+    "title": "warehouse-management",
+    "id": "warehouse-management-flp",
+    "entityType": "bundle"
+  },
+  "payload": {
+    "catalogs": [
+      {
+        "_version": "3.0.0",
+        "identification": {
+          "id": "warehouse-management-catalog",
+          "title": "{{title}}",
+          "entityType": "catalog",
+          "i18n": "i18n/catalog.properties"
+        },
+        "payload": {
+          "viz": [
+            {
+              "appId": "warehouse.inventory.products",
+              "vizId": "Product-manage"
+            },
+            {
+              "appId": "purchases",
+              "vizId": "PurchaseOrder-manage"
+            },
+            {
+              "appId": "warehouse.inventory.stockmovements",
+              "vizId": "StockMovement-manage"
+            }
+          ]
+        }
+      }
+    ],
+    "groups": [
+      {
+        "_version": "3.0.0",
+        "identification": {
+          "id": "warehouse-management-group",
+          "title": "{{title}}",
+          "entityType": "group",
+          "i18n": "i18n/group.properties"
+        },
+        "payload": {
+          "viz": [
+            {
+              "id": "warehouse-managementproducts-001",
+              "appId": "warehouse.inventory.products",
+              "vizId": "Product-manage"
+            },
+            {
+              "id": "warehouse-managementpurchases-001",
+              "appId": "purchases",
+              "vizId": "PurchaseOrder-manage"
+            },
+            {
+              "id": "warehouse-managementstock-movements-001",
+              "appId": "warehouse.inventory.stockmovements",
+              "vizId": "StockMovement-manage"
+            }
+          ]
+        }
+      }
+    ],
+    "sites": [
+      {
+        "_version": "3.0.0",
+        "identification": {
+          "id": "warehouse-management-site",
+          "entityType": "site",
+          "title": "warehouse-management",
+          "description": "A simple CAP project."
+        },
+        "payload": {
+          "config": {
+            "ushellConfig": {
+              "renderers": {
+                "fiori2": {
+                  "componentData": {
+                    "config": {
+                      "applications": {
+                        "Shell-home": {}
+                      },
+                      "enableSearch": true,
+                      "enablePersonalization": true,
+                      "enableSetTheme": true,
+                      "enableSetLanguage": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "groupsOrder": ["warehouse-management-group"],
+          "sap.cloud.portal": {
+            "config": {
+              "theme.id": "sap_horizon",
+              "theme.active": [
+                "sap_horizon",
+                "sap_horizon_dark",
+                "sap_horizon_hcw",
+                "sap_horizon_hcb"
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }
+}

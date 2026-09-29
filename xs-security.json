@@ -1,0 +1,31 @@
+{
+  "xsappname": "warehouse-management",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.WarehouseAdmin",
+      "description": "Warehouse Administrator"
+    },
+    {
+      "name": "$XSAPPNAME.WarehouseEmployee",
+      "description": "Warehouse Employee"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "WarehouseAdmin",
+      "description": "Warehouse Administrator",
+      "scope-references": [
+        "$XSAPPNAME.WarehouseAdmin"
+      ]
+    },
+    {
+      "name": "WarehouseEmployee",
+      "description": "Warehouse Employee",
+      "scope-references": [
+        "$XSAPPNAME.WarehouseEmployee"
+      ]
+    }
+  ],
+  "attributes": []
+}

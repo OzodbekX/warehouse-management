@@ -1,0 +1,4 @@
+ID,name,email,phone,address,active,createdAt,createdBy,modifiedAt,modifiedBy
+00000005-0000-4000-8000-000000000001,Example Office Electronics,orders@electronics.example.com,+1-202-555-0101,10 Sample Technology Drive,true,2026-09-01T09:00:00Z,seed,2026-09-01T09:00:00Z,seed
+00000005-0000-4000-8000-000000000002,Example Packaging Supply,sales@packaging.example.com,+1-202-555-0102,20 Sample Commerce Street,true,2026-09-01T09:00:00Z,seed,2026-09-01T09:00:00Z,seed
+00000005-0000-4000-8000-000000000003,Example Industrial Safety,orders@safety.example.com,+1-202-555-0103,30 Sample Industry Avenue,true,2026-09-01T09:00:00Z,seed,2026-09-01T09:00:00Z,seed

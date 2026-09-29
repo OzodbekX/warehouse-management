@@ -1,0 +1,243 @@
+_schema-version: 3.3.0
+ID: warehouse-management
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+  - name: warehouse-management-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      instances: 1
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: warehouse-management-auth
+      - name: warehouse-management-db
+  - name: warehouse-management
+    type: approuter.nodejs
+    path: app/router
+    parameters:
+      keep-existing-routes: true
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json as well
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: warehouse-management-auth
+      - name: warehouse-management-html5-runtime
+      - name: warehouse-management-portal
+      - name: mtx-api
+        group: destinations
+        properties:
+          name: mtx-api # must be used in xs-app.json as well
+          url: ~{mtx-url}
+    provides:
+      - name: app-api
+        properties:
+          app-protocol: ${protocol}
+          app-uri: ${default-uri}
+    properties:
+      TENANT_HOST_PATTERN: "^(.*)-${default-uri}"
+
+  - name: warehouse-management-app-deployer
+    type: com.sap.application.content
+    path: gen
+    build-parameters:
+      build-result: app/
+      requires:
+        - name: warehousemanagementproducts
+          artifacts:
+            - products.zip
+          target-path: app/
+        - name: warehousemanagementpurchases
+          artifacts:
+            - purchases.zip
+          target-path: app/
+        - name: warehousemanagementstockmovements
+          artifacts:
+            - stock-movements.zip
+          target-path: app/
+    requires:
+      - name: warehouse-management-auth
+      - name: srv-api
+      - name: warehouse-management-html5-repo-host
+        parameters:
+          content-target: true
+          config:
+            HTML5Runtime_enabled: true
+
+  - name: warehousemanagementproducts
+    type: html5
+    path: app/products
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
+  - name: warehousemanagementpurchases
+    type: html5
+    path: app/purchases
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
+  - name: warehousemanagementstockmovements
+    type: html5
+    path: app/stock-movements
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
+
+  - name: warehouse-management-portal-deployer
+    type: com.sap.application.content
+    path: app/portal
+    requires:
+      - name: warehouse-management-portal
+        parameters:
+          content-target: true
+          service-key:
+            name: warehouse-management-portal-key
+            config:
+              content-endpoint: developer
+      - name: warehouse-management-auth
+      - name: warehouse-management-html5-repo-host
+      - name: warehouse-management-app-deployer
+    deployed-after:
+      - warehouse-management-app-deployer
+    parameters:
+      config:
+        TENANT_HOST_PATTERN: "^(.*)-${default-uri}"
+
+  - name: warehouse-management-mtx
+    type: nodejs
+    path: gen/mtx/sidecar
+    requires:
+      - name: warehouse-management-auth
+      - name: warehouse-management-db
+      - name: warehouse-management-registry
+      - name: app-api
+        properties:
+          SUBSCRIPTION_URL: ~{app-protocol}://\${tenant_subdomain}-~{app-uri}
+      - name: warehouse-management-html5-runtime
+      - name: warehouse-management-html5-repo-host
+      - name: warehouse-management-portal
+    build-parameters:
+      builder: npm-ci
+    parameters:
+      instances: 1
+      memory: 256M
+      disk-quota: 512M
+    hooks:
+      - name: upgrade-all
+        type: task
+        phases:
+          - blue-green.application.before-start.idle
+          - deploy.application.before-start
+        parameters:
+          name: upgrade
+          memory: 512M # increase as required
+          disk-quota: 768M # increase as required
+          command: cds-mtx upgrade '*'
+    provides:
+      - name: mtx-api
+        properties:
+          mtx-url: ${default-url}
+
+resources:
+  - name: warehouse-management-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: warehouse-management-${org}-${space}
+        tenant-mode: shared
+        oauth2-configuration:
+          credential-types:
+            - "binding-secret"
+            - "x509"
+          redirect-uris:
+            - https://*~{app-api/app-uri}/**
+        role-collections:
+          - name: 'WarehouseEmployee (warehouse-management ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.WarehouseEmployee'
+          - name: 'WarehouseAdmin (warehouse-management ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.WarehouseAdmin'
+    requires:
+      - name: app-api
+
+  - name: warehouse-management-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+  - name: warehouse-management-html5-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+  - name: warehouse-management-portal
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: portal
+      service-plan: standard
+  - name: warehouse-management-db
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: service-manager
+      service-plan: container
+  - name: warehouse-management-registry
+    type: org.cloudfoundry.managed-service
+    requires:
+      - name: mtx-api
+    parameters:
+      service: saas-registry
+      service-plan: application
+      config:
+        xsappname: warehouse-management-${org}-${space}
+        appName: warehouse-management-${org}-${space}
+        displayName: warehouse-management
+        description: A simple CAP project.
+        category: 'Category'
+        appUrls:
+          getDependencies: ~{mtx-api/mtx-url}/-/cds/saas-provisioning/dependencies
+          onSubscription: ~{mtx-api/mtx-url}/-/cds/saas-provisioning/tenant/{tenantId}
+          onSubscriptionAsync: true
+          onUnSubscriptionAsync: true
+          onUpdateDependenciesAsync: true
+          callbackTimeoutMillis: 300000 # Increase if your deployments are taking longer than that

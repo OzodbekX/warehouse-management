@@ -1,0 +1,73 @@
+{
+  "name": "warehouse-management",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@cap-js/hana": "^3",
+    "@sap/cds": "^10",
+    "@sap/xssec": "^4"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^3",
+    "@sap/cds-dk": "^10",
+    "cds-plugin-ui5": "^0.17.0"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-products": "cds watch --open warehouse.inventory.products/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-stock-movements": "cds watch --open warehouse.inventory.stockmovements/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-stockmovements": "cds watch --open warehouse.inventory.stockmovements/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-purchases": "cds watch --open purchases/index.html?sap-ui-xx-viewCache=false --livereload false"
+  },
+  "private": true,
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/products",
+    "app/stock-movements",
+    "app/stockmovements",
+    "app/stock-movements",
+    "app/purchases"
+  ],
+  "cds": {
+    "requires": {
+      "db": {
+        "[development]": {
+          "kind": "sqlite",
+          "data": [
+            "db/data",
+            "test/data"
+          ]
+        },
+        "[production]": {
+          "kind": "hana"
+        }
+      },
+      "auth": {
+        "kind": "mocked",
+        "users": {
+          "admin": {
+            "password": "admin",
+            "roles": [
+              "WarehouseAdmin"
+            ]
+          },
+          "employee": {
+            "password": "employee",
+            "roles": [
+              "WarehouseEmployee"
+            ]
+          }
+        }
+      },
+      "[production]": {
+        "auth": {
+          "kind": "xsuaa"
+        }
+      },
+      "html5-repo": true,
+      "portal": true
+    }
+  }
+}

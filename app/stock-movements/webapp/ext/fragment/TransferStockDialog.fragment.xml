@@ -1,0 +1,106 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+
+    <Dialog
+        id="transferStockDialog"
+        title="Transfer Stock"
+        contentWidth="450px">
+
+        <VBox
+            id="transferStockVBox"
+            class="sapUiMediumMargin">
+
+            <!-- PRODUCT -->
+            <Label
+                id="productLabel"
+                text="Product"/>
+
+            <ComboBox
+                id="productSelect"
+                width="100%"
+                placeholder="Select Product"
+                items="{
+                    path: '/Products'
+                }">
+
+                <core:Item
+                    id="productItem"
+                    key="{ID}"
+                    text="{name}"/>
+
+            </ComboBox>
+
+            <!-- FROM WAREHOUSE -->
+            <Label
+                id="fromWarehouseLabel"
+                text="From Warehouse"
+                class="sapUiSmallMarginTop"/>
+
+            <ComboBox
+                id="fromWarehouseSelect"
+                width="100%"
+                placeholder="Select From Warehouse"
+                items="{
+                    path: '/Warehouses'
+                }">
+
+                <core:Item
+                    id="fromWarehouseItem"
+                    key="{ID}"
+                    text="{name}"/>
+
+            </ComboBox>
+
+            <!-- TO WAREHOUSE -->
+            <Label
+                id="toWarehouseLabel"
+                text="To Warehouse"
+                class="sapUiSmallMarginTop"/>
+
+            <ComboBox
+                id="toWarehouseSelect"
+                width="100%"
+                placeholder="Select To Warehouse"
+                items="{
+                    path: '/Warehouses'
+                }">
+
+                <core:Item
+                    id="toWarehouseItem"
+                    key="{ID}"
+                    text="{name}"/>
+
+            </ComboBox>
+
+            <!-- QUANTITY -->
+            <Label
+                id="quantityLabel"
+                text="Quantity"
+                class="sapUiSmallMarginTop"/>
+
+            <Input
+                id="quantityInput"
+                type="Number"
+                placeholder="Enter Quantity"/>
+
+        </VBox>
+
+        <beginButton>
+            <Button
+                id="transferButton"
+                text="Transfer"
+                type="Emphasized"
+                press=".onConfirmTransfer"/>
+        </beginButton>
+
+        <endButton>
+            <Button
+                id="cancelButton"
+                text="Cancel"
+                press=".onCancelTransfer"/>
+        </endButton>
+
+    </Dialog>
+
+</core:FragmentDefinition>

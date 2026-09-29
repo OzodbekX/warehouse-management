@@ -1,0 +1,29 @@
+code,locale,name,descr
+USD,en,US Dollar,Currency of the United States
+EUR,en,Euro,Currency of the euro area
+GBP,en,British Pound,Currency of the United Kingdom
+JPY,en,Japanese Yen,Currency of Japan
+CHF,en,Swiss Franc,Currency of Switzerland
+CAD,en,Canadian Dollar,Currency of Canada
+AUD,en,Australian Dollar,Currency of Australia
+USD,uz,AQSh dollari,Amerika Qoʻshma Shtatlari valyutasi
+EUR,uz,Yevro,Yevro hududi valyutasi
+GBP,uz,Britaniya funt sterlingi,Birlashgan Qirollik valyutasi
+JPY,uz,Yaponiya iyenasi,Yaponiya valyutasi
+CHF,uz,Shveytsariya franki,Shveytsariya valyutasi
+CAD,uz,Kanada dollari,Kanada valyutasi
+AUD,uz,Avstraliya dollari,Avstraliya valyutasi
+USD,fr,Dollar américain,Monnaie des États-Unis
+EUR,fr,Euro,Monnaie de la zone euro
+GBP,fr,Livre sterling,Monnaie du Royaume-Uni
+JPY,fr,Yen japonais,Monnaie du Japon
+CHF,fr,Franc suisse,Monnaie de la Suisse
+CAD,fr,Dollar canadien,Monnaie du Canada
+AUD,fr,Dollar australien,Monnaie de l’Australie
+USD,es,Dólar estadounidense,Moneda de Estados Unidos
+EUR,es,Euro,Moneda de la zona del euro
+GBP,es,Libra esterlina,Moneda del Reino Unido
+JPY,es,Yen japonés,Moneda de Japón
+CHF,es,Franco suizo,Moneda de Suiza
+CAD,es,Dólar canadiense,Moneda de Canadá
+AUD,es,Dólar australiano,Moneda de Australia
